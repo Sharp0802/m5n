@@ -5,11 +5,5 @@
         <IsAotCompatible>true</IsAotCompatible>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
-    
-    <ItemGroup>
-        <ProjectReference Include="..\M5N.SourceGenerator\M5N.SourceGenerator.csproj"
-                          OutputItemType="Analyzer"
-                          ReferenceOutputAssembly="false"/>
-    </ItemGroup>
 
 </Project>

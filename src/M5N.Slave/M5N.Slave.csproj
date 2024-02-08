@@ -1,7 +1,8 @@
 ﻿<Project Sdk="M5N.Sdk/1.0.0">
     
     <PropertyGroup>
-        <OutputType>winexe</OutputType>
+        <OutputType>exe</OutputType>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <ItemGroup>
