@@ -1,4 +1,6 @@
-﻿namespace M5N;
+﻿using M5N.Primitives;
+
+namespace M5N;
 
 public delegate void StatusRespondDelegate(ErrorCode error);
 

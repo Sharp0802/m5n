@@ -1,4 +1,4 @@
-﻿namespace M5N;
+﻿namespace M5N.Primitives;
 
 [Flags]
 public enum ControlCode : ushort
