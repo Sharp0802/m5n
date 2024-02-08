@@ -1,0 +1,15 @@
+﻿<Project Sdk="M5N.Sdk/1.0.0">
+
+    <PropertyGroup>
+        <OutputType>library</OutputType>
+        <IsAotCompatible>true</IsAotCompatible>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <ProjectReference Include="..\M5N.SourceGenerator\M5N.SourceGenerator.csproj"
+                          OutputItemType="Analyzer"
+                          ReferenceOutputAssembly="false"/>
+    </ItemGroup>
+
+</Project>
