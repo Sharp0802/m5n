@@ -2,6 +2,7 @@
     
     <PropertyGroup>
         <OutputType>exe</OutputType>
+        <SelfContained>true</SelfContained>
     </PropertyGroup>
     
     <ItemGroup>
