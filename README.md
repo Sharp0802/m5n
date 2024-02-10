@@ -7,7 +7,8 @@ A simple swap2-based gomoku server/broker, written in C#, compatible with CPytho
 ### Compiling
 
 - .NET SDK 8.0 or above
-- GCC
+- GCC (MinGW on Windows)
+- CPython 3.11
 
 ### Runtime
 
