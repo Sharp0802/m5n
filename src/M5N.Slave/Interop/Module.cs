@@ -14,6 +14,8 @@ public partial class Module
         {
             fixed (byte* p = name.ToCString())
                 _handle = PyImport_ImportModule((IntPtr)p);
+            if (_handle == 0)
+                throw new PythonException();
         }
     }
 
@@ -22,12 +24,6 @@ public partial class Module
 
     [LibraryImport(InteropConfiguration.Python)]
     private static partial IntPtr PyObject_GetAttrString(IntPtr o, IntPtr name);
-
-    [LibraryImport(InteropConfiguration.Python)]
-    private static partial IntPtr PyTuple_New(nint n);
-
-    [LibraryImport(InteropConfiguration.Python)]
-    private static partial IntPtr PyTuple_SetItem(IntPtr p, nint pos, IntPtr o);
 
     [LibraryImport(InteropConfiguration.Python)]
     private static partial IntPtr PyObject_CallObject(IntPtr callable, IntPtr args);
@@ -40,7 +36,7 @@ public partial class Module
         unsafe
         {
             IntPtr fp;
-            fixed (byte* p = name.ToCString())
+            fixed (byte* p = name.ToCString()) 
                 fp = PyObject_GetAttrString(_handle, (IntPtr)p);
             if (fp == IntPtr.Zero)
                 return null;
@@ -49,10 +45,7 @@ public partial class Module
 
         static IntPtr Invoke(IntPtr func, PythonObject[] args)
         {
-            var tuple = PyTuple_New(args.Length);
-            for (var i = 0; i < args.Length; i++)
-                PyTuple_SetItem(tuple, i, args[i].Handle);
-            return PyObject_CallObject(func, tuple);
+            return PyObject_CallObject(func, ((PythonTuple)args).Handle);
         }
     }
 }
