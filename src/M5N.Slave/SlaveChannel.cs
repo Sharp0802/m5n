@@ -28,7 +28,7 @@ public class SlaveChannel(EndPoint endpoint, Slave slave) : Channel(endpoint)
                     break;
                 case TagCode.Coordinate:
                     var (x, y) = slave.InqueryStone();
-                    err = Respond(new CoordinateDTO(x, y, slave.Colour));
+                    err        = Respond(new CoordinateDTO(x, y, slave.Colour));
                     if (err is ErrorCode.Success)
                         slave.SetStone(x, y, slave.Colour);
                     break;
@@ -53,7 +53,7 @@ public class SlaveChannel(EndPoint endpoint, Slave slave) : Channel(endpoint)
                 {
                     using var ctx = Listen<ColourDTO>(timeout);
                     slave.Colour = ctx.Result!.Value.Colour;
-                    ctx.Status    = ErrorCode.Success;
+                    ctx.Status   = ErrorCode.Success;
                     break;
                 }
                 case TagCode.Coordinate:
@@ -69,10 +69,7 @@ public class SlaveChannel(EndPoint endpoint, Slave slave) : Channel(endpoint)
                     using var ctx = Listen<IdentifierDTO>(timeout);
 
                     if (_id == 0xFF)
-                    {
-                        _id           = ctx.Result!.Value.Identifier;
-                        slave.Colour = _id == 0 ? Colour.Black : Colour.White;
-                    }
+                        _id = ctx.Result!.Value.Identifier;
                     else if (ctx.Result!.Value.Identifier == _id)
                     {
                         slave.DeclareVictory();

@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using M5N.Master;
+using M5N.Primitives;
 
 if (args.Length != 1)
 {
@@ -20,8 +21,9 @@ using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, Pr
     socket.Bind(new IPEndPoint(IPAddress.Any, port));
     socket.Listen(2);
 
-    using var user0 = new MasterChannel(socket);
-    using var user1 = new MasterChannel(socket);
+    // Colour will be swapped/inverted.
+    using var user0 = new MasterChannel(socket, Colour.White);
+    using var user1 = new MasterChannel(socket, Colour.Black);
 
     Console.WriteLine("Game established.");
     

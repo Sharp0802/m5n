@@ -17,6 +17,7 @@ public class Master
 
     public MasterChannel User0 { get; }
     public MasterChannel User1 { get; }
+    
 
     private Colour[,] Map { get; } = new Colour[15, 15];
 
@@ -66,6 +67,7 @@ public class Master
         coord             = dto;
         Map[dto.X, dto.Y] = dto.Colour;
         this[other].Respond(dto);
+        
         return true;
     }
 
@@ -115,26 +117,34 @@ public class Master
         return true;
     }
 
-    private sbyte LengthFrom(CoordinateDTO coord, sbyte offsetX, sbyte offsetY)
+    private void SwapColour()
+    {
+        (User0.Colour, User1.Colour) = (User1.Colour, User0.Colour);
+        User0.Respond(new ColourDTO(User0.Colour));
+        User1.Respond(new ColourDTO(User1.Colour));
+    }
+
+    private int LengthFrom(CoordinateDTO coord, int offsetX, int offsetY)
     {
         var size = Map.GetLength(0);
 
-        var x = (sbyte)coord.X;
-        var y = (sbyte)coord.Y;
+        var x = (int)coord.X;
+        var y = (int)coord.Y;
 
-        sbyte cnt = 0;
+        var cnt = 0;
         for (; 
              0 <= x && x < size && 
-             0 <= y && y < size; 
+             0 <= y && y < size &&
+             Map[x, y] == coord.Colour; 
              x += offsetX,
-             y += offsetY) 
+             y += offsetY)
             cnt++;
         return cnt;
     }
 
-    private sbyte BiLengthFrom(CoordinateDTO coord, sbyte offsetX, sbyte offsetY)
+    private int BiLengthFrom(CoordinateDTO coord, int offsetX, int offsetY)
     {
-        return (sbyte)(LengthFrom(coord, offsetX, offsetY) + 1 + LengthFrom(coord, (sbyte)-offsetX, (sbyte)-offsetY));
+        return LengthFrom(coord, offsetX, offsetY) + LengthFrom(coord, -offsetX, -offsetY) - 1;
     }
 
     private int RankOf(CoordinateDTO coord)
@@ -152,9 +162,10 @@ public class Master
     {
         User0.Respond(new IdentifierDTO(0));
         User1.Respond(new IdentifierDTO(1));
-
+        
         for (var i = 0; i < 3; ++i)
         {
+            SwapColour();
             if (!AcceptCoordinateFrom(0, out _))
                 return Winner;
         }
@@ -165,18 +176,28 @@ public class Master
         byte current;
         if (choice == TagCode.Coordinate)
         {
+            SwapColour();
             for (var i = 0; i < 2; ++i)
+            {
+                SwapColour();
                 if (!AcceptCoordinateFrom(1, out _))
                     return Winner;
+            }
             
             if (!AcceptColourFrom(0, out var colour))
                 return Winner;
+            if (colour != User0.Colour)
+                SwapColour();
+            
             current = (byte)(colour is Colour.White ? 0 : 1);
         }
         else
         {
             if (!AcceptColourFrom(1, out var colour))
                 return Winner;
+            if (colour != User1.Colour)
+                SwapColour();
+            
             current = (byte)(colour is Colour.White ? 1 : 0);
         }
 
@@ -186,7 +207,10 @@ public class Master
                 return Winner;
 
             if (RankOf(coord) >= 5)
-                return Winner = current;
+            {
+                DeclareVictory(current);
+                return Winner;
+            }
 
             current = OtherPlayer(current);
         }
