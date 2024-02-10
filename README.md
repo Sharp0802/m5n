@@ -47,6 +47,9 @@ NONE  = 0
 WHITE = 1
 BLACK = 2
 
+COLOUR = 0
+COORD = 1
+
 # Your states
 my_map = [[NONE]*15]*15
 my_colour = NONE
@@ -70,6 +73,20 @@ def choose_colour() -> None:
 def place_stone() -> None:
     # calculating...
     return (x, y)
+
+# Change my colour(COLOUR) or place stones(COORD)
+# See `Ruleset`
+def make_decision() -> int:
+    # calculating...
+    return COLOUR -or- COORD
+
+# Victory!
+def victory() -> None:
+    pass
+
+# Defeat...
+def defeat() -> None:
+    pass
 
 ################
 

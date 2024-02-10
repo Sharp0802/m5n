@@ -71,7 +71,7 @@ public abstract class Channel : IDisposable
         Send(buffer);
     }
 
-    private bool ReceiveCode(ref TimeSpan timeout, out ControlCode ctrl, out ushort code)
+    protected bool ReceiveCode(ref TimeSpan timeout, out ControlCode ctrl, out ushort code)
     {
         var buffer = new byte[2];
         if (!Receive(buffer, ref timeout))
@@ -97,7 +97,12 @@ public abstract class Channel : IDisposable
             SendCode(ControlCode.Syn, (ushort)ErrorCode.Timeout);
             return new ChannelRespondContext<T>(null, null);
         }
-        
+
+        return Listen<T>(timeout);
+    }
+
+    public ChannelRespondContext<T> Listen<T>(TimeSpan timeout) where T : unmanaged, IChannelObject<T>
+    {
         T result;
         using (var owner = MemoryPool<byte>.Shared.Rent(Marshal.SizeOf<T>()))
         {
@@ -113,7 +118,6 @@ public abstract class Channel : IDisposable
         var validation = result.Validate().ToArray();
         if (validation.Length != 0)
             throw new AggregateException("Validation failed.", validation.Cast<Exception>());
-        
         
         return new ChannelRespondContext<T>(result, SetStatus);
 
