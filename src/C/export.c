@@ -17,3 +17,9 @@ int IsType_PythonInteger(void* py)
 {
     return PyLong_Check(py);
 }
+
+__attribute__((visibility("default")))
+int IsType_PythonTuple(void* py)
+{
+    return PyTuple_Check(py);
+}
