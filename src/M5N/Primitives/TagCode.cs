@@ -3,5 +3,7 @@
 public enum TagCode : ushort
 {
     Colour,
-    Coordinate
+    Coordinate,
+    Identifier,
+    Choice
 }
