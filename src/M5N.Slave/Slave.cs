@@ -6,19 +6,29 @@ namespace M5N.Slave;
 
 public class Slave(Module module)
 {
-    private readonly Module.PyFunctionDelegate _setColour    = GetMethod(module, "set_colour");
-    private readonly Module.PyFunctionDelegate _setStone     = GetMethod(module, "set_stone");
-    private readonly Module.PyFunctionDelegate _chooseColour = GetMethod(module, "choose_colour");
-    private readonly Module.PyFunctionDelegate _placeStone   = GetMethod(module, "place_stone");
+    private readonly Module.PyFunctionDelegate _setColour      = GetMethod(module, "set_colour");
+    private readonly Module.PyFunctionDelegate _setStone       = GetMethod(module, "set_stone");
+    private readonly Module.PyFunctionDelegate _chooseColour   = GetMethod(module, "choose_colour");
+    private readonly Module.PyFunctionDelegate _placeStone     = GetMethod(module, "place_stone");
+    private readonly Module.PyFunctionDelegate _makeDecision   = GetMethod(module, "make_decision");
+    private readonly Module.PyFunctionDelegate _declareVictory = GetMethod(module, "victory");
+    private readonly Module.PyFunctionDelegate _declareDefeat  = GetMethod(module, "defeat");
 
     private static Module.PyFunctionDelegate GetMethod(Module module, string name)
     {
         return module.GetMethod(name) ?? throw new MissingMethodException(null, name);
     }
 
-    public void SetColour(Colour colour)
+    private Colour _colour;
+
+    public Colour Colour
     {
-        _setColour((long)colour);
+        get => _colour;
+        set
+        {
+            _colour = value;
+            _setColour((long)value);
+        }
     }
 
     public Colour InqueryColour()
@@ -31,7 +41,7 @@ public class Slave(Module module)
         _setStone(x, y, (long)colour);
     }
 
-    public (long, long) InqueryStone()
+    public (byte X, byte Y) InqueryStone()
     {
         var tuple = (PythonTuple)_placeStone();
         if (tuple.Value.Length != 2)
@@ -39,9 +49,30 @@ public class Slave(Module module)
         if (tuple.Value.Any(obj => obj is null))
             throw new NullReferenceException("Element of coordinate cannot be null.");
 
-        return (
-            ((PythonInteger)tuple.Value[0]!).Value,
-            ((PythonInteger)tuple.Value[1]!).Value
+        var coord = (
+            X: ((PythonInteger)tuple.Value[0]!).Value,
+            Y: ((PythonInteger)tuple.Value[1]!).Value
         );
+
+        if (coord.X < 0 || 15 <= coord.X ||
+            coord.Y < 0 || 15 <= coord.Y)
+            throw new InvalidOperationException();
+
+        return ((byte)coord.X, (byte)coord.Y);
+    }
+
+    public TagCode MakeDecision()
+    {
+        return (TagCode)((PythonInteger)_makeDecision()).Value;
+    }
+
+    public void DeclareVictory()
+    {
+        _declareVictory();
+    }
+
+    public void DeclareDefeat()
+    {
+        _declareDefeat();
     }
 }
