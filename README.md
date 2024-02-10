@@ -82,8 +82,11 @@ Let your source codes are in `./app` folder.
 Then, you can run client by:
 
 ```sh
-M5N.Slave <port> ./app
+M5N.Slave <endpoint> ./app <module>
 ```
+
+You don't have to specify a module.
+Then, by default, `main` (typically `main.py`) module is used. 
 
 ## How to run server
 
