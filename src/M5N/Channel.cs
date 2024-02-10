@@ -53,7 +53,8 @@ public abstract class Channel : IDisposable
             }
             
             remains -= task.Result;
-            timeout -= DateTime.UtcNow - start;
+            if (timeout != Timeout.InfiniteTimeSpan)
+                timeout -= DateTime.UtcNow - start;
         } while (remains > 0);
 
         return true;
