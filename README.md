@@ -41,6 +41,8 @@ Let player A, B.
 
 Below is boilerplate for M5N.
 
+*Below may contains legacy codebase. Maynot be working correctly. See working [sample code](test/main.py). You can prove application manually with sample-code!*
+
 ```python
 
 # Constants; Do not edit
