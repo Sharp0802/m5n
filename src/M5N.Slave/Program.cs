@@ -26,7 +26,7 @@ else
         return 1;
     }
 
-    if (ushort.TryParse(trunc[1], out var port))
+    if (!ushort.TryParse(trunc[1], out var port))
     {
         Console.Error.WriteLine("Invalid port number.");
         return 1;
