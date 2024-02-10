@@ -1,7 +1,16 @@
 ﻿using System.Net;
+using System.Runtime.InteropServices;
 using System.Text;
 using M5N.Slave;
 using M5N.Slave.Interop;
+
+NativeLibrary.SetDllImportResolver(typeof(Python).Assembly, (name, assembly, path) =>
+{
+    var handle = IntPtr.Zero;
+    if (OperatingSystem.IsWindows() && name.Equals("python3.11", StringComparison.Ordinal)) 
+        handle = NativeLibrary.Load("python311");
+    return handle;
+});
 
 Console.OutputEncoding = Encoding.UTF8;
 Console.InputEncoding  = Encoding.UTF8;

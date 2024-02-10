@@ -29,7 +29,7 @@ public partial class Module
     private static partial IntPtr PyObject_CallObject(IntPtr callable, IntPtr args);
 
 
-    public delegate PythonObject PyFunctionDelegate(params PythonObject[] args);
+    public delegate PythonObject? PyFunctionDelegate(params PythonObject[] args);
 
     public PyFunctionDelegate? GetMethod(string name)
     {

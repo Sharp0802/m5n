@@ -33,7 +33,7 @@ public class Slave(Module module)
 
     public Colour InqueryColour()
     {
-        return (Colour)((PythonInteger)_chooseColour()).Value;
+        return (Colour)((PythonInteger)_chooseColour()!).Value;
     }
 
     public void SetStone(byte x, byte y, Colour colour)
@@ -43,7 +43,7 @@ public class Slave(Module module)
 
     public (byte X, byte Y) InqueryStone()
     {
-        var tuple = (PythonTuple)_placeStone();
+        var tuple = (PythonTuple)_placeStone()!;
         if (tuple.Value.Length != 2)
             throw new InvalidProgramException("Signature of reserved function is modified. See the manual.");
         if (tuple.Value.Any(obj => obj is null))
@@ -63,7 +63,7 @@ public class Slave(Module module)
 
     public TagCode MakeDecision()
     {
-        return (TagCode)((PythonInteger)_makeDecision()).Value;
+        return (TagCode)((PythonInteger)_makeDecision()!).Value;
     }
 
     public void DeclareVictory()
