@@ -6,7 +6,19 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\M5N.Slave.CodeGen\M5N.Slave.CodeGen.csproj"
+                          OutputItemType="Analyzer"
+                          ReferenceOutputAssembly="false"/>
         <ProjectReference Include="..\M5N\M5N.csproj" />
+    </ItemGroup>
+    
+    <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+        <Exec Command="chmod +x '$(ProjectDir)../C/build.sh';$(ProjectDir)../C/build.sh"/>
+    </Target>
+    <ItemGroup>
+        <Content Include="$(ProjectDir)../C/*pyexport*">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
 
 </Project>
