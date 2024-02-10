@@ -48,7 +48,7 @@ public class PythonObjectRedirectGenerator : IIncrementalGenerator
         
         sub.AppendLine(
             """
-                public static PythonObject FromHandle(IntPtr handle)
+                public static PythonObject? FromHandle(IntPtr handle)
                 {
                     if (handle == GetAddressOfNoneObject())
                         return null;
