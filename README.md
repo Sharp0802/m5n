@@ -7,7 +7,8 @@ A simple swap2-based gomoku server/broker, written in C#, compatible with CPytho
 ### Compiling
 
 - .NET SDK 8.0 or above
-- GCC
+- GCC (MinGW on Windows)
+- CPython 3.11
 
 ### Runtime
 
@@ -39,6 +40,8 @@ Let player A, B.
 ## How to write client
 
 Below is boilerplate for M5N.
+
+*Below may contains legacy codebase. Maynot be working correctly. See working [sample code](test/main.py). You can prove application manually with sample-code!*
 
 ```python
 
