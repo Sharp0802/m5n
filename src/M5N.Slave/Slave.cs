@@ -1,3 +1,4 @@
+using M5N.Interop.NativeLibrary;
 using M5N.Primitives;
 
 namespace M5N.Slave;
@@ -12,7 +13,7 @@ public class Slave(dynamic module)
         set
         {
             _colour = value;
-            module.SetColour((long)value);
+            module.SetColour((byte)value);
         }
     }
 
@@ -23,7 +24,7 @@ public class Slave(dynamic module)
 
     public void SetStone(byte x, byte y, Colour colour)
     {
-        module.SetStone(x, y, (long)colour);
+        module.SetStone(x, y, (byte)colour);
     }
 
     public (byte X, byte Y) InqueryStone()
