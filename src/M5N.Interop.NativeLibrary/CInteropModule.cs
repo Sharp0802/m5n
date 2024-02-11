@@ -1,58 +1,81 @@
-﻿using System.Dynamic;
-using System.Linq.Expressions;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Dynamic;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 namespace M5N.Interop.NativeLibrary;
 
-public sealed class CInteropModule : InteropModule, IDisposable
+public sealed class CInteropModule : InteropModule
 {
-    private readonly Dictionary<string, Delegate>                          _delegates  = new();
-    private readonly Dictionary<string, (Type Signature, Type[] TypeArgs)> _signatures = new();
-    private readonly IntPtr                                                _module;
+    private const string Target = "{5c4a08be-fafb-4952-b5a4-5a113bc36653}";
 
-    public CInteropModule(IntPtr module)
+    public CInteropModule(string name)
     {
-        _module = module;
+        System.Runtime.InteropServices.NativeLibrary.SetDllImportResolver(
+            typeof(CInteropModule).Assembly,
+            (search, _, _) =>
+            {
+                var handle = IntPtr.Zero;
+                if (Target.Equals(search, StringComparison.Ordinal)) 
+                    handle = System.Runtime.InteropServices.NativeLibrary.Load(name);
+                return handle;
+            });
     }
-    
-    public bool TryRegisterSignature(string name, params Type[] args)
+
+    [DllImport(Target)]
+    public static extern void SetColour(byte colour);
+
+    [DllImport(Target)]
+    public static extern byte ChooseColour();
+
+    [DllImport(Target)]
+    public static extern void SetStone(byte x, byte y, byte colour);
+
+    public static IEnumerable<object> PlaceStone()
     {
-        var type = Expression.GetDelegateType(args);
-        return _signatures.TryAdd(NameResolvingPolicy.Resolve(name), (type, args));
+        unsafe
+        {
+            var p = PlaceStone_();
+            return new object[] { p[0], p[1] };
+            
+            [DllImport(Target, EntryPoint = "PlaceStone")]
+            static extern byte* PlaceStone_();
+        }
     }
-    
+
+    [DllImport(Target)]
+    public static extern ushort MakeDecision();
+
+    [DllImport(Target)]
+    public static extern void Victory();
+
+    [DllImport(Target)]
+    public static extern void Defeat();
+
+
+    [DynamicDependency(nameof(SetColour))]
+    [DynamicDependency(nameof(ChooseColour))]
+    [DynamicDependency(nameof(SetStone))]
+    [DynamicDependency(nameof(PlaceStone))]
+    [DynamicDependency(nameof(MakeDecision))]
+    [DynamicDependency(nameof(Victory))]
+    [DynamicDependency(nameof(Defeat))]
     public override bool TryInvokeMember(InvokeMemberBinder binder, object?[]? args, out object? result)
     {
-        args ??= Array.Empty<object?>();
-
-        var name = NameResolvingPolicy.Resolve(binder.Name);
-        
-        if (!_signatures.TryGetValue(name, out var signature))
+        try
+        {
+            result = typeof(CInteropModule).InvokeMember(
+                NameResolvingPolicy.Resolve(binder.Name),
+                BindingFlags.Public | BindingFlags.Static, 
+                null, 
+                null, 
+                args);
+            return true;
+        }
+        catch (MissingMethodException)
         {
             result = null;
             return false;
         }
-
-        if (signature.TypeArgs.Length - 1 != args.Length)
-        {
-            result = null;
-            return false;
-        }
-
-        var fp = System.Runtime.InteropServices.NativeLibrary.GetExport(_module, name);
-
-        if (!_delegates.TryGetValue(name, out var func))
-        {
-            func = Marshal.GetDelegateForFunctionPointer(fp, signature.Signature);
-            _delegates.Add(name, func);
-        }
-
-        result = func.DynamicInvoke(args);
-        return true;
-    }
-
-    public void Dispose()
-    {
-        System.Runtime.InteropServices.NativeLibrary.Free(_module);
     }
 }
