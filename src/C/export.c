@@ -5,21 +5,3 @@ void* GetAddressOfNoneObject()
 {
     return Py_None;
 }
-
-__attribute__((visibility("default")))
-int IsType_PythonString(void* py)
-{
-    return PyUnicode_Check(py);
-}
-
-__attribute__((visibility("default")))
-int IsType_PythonInteger(void* py)
-{
-    return PyLong_Check(py);
-}
-
-__attribute__((visibility("default")))
-int IsType_PythonTuple(void* py)
-{
-    return PyTuple_Check(py);
-}
