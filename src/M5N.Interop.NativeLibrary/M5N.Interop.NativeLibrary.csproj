@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\M5N.Interop\M5N.Interop.csproj" />
+      <ProjectReference Include="..\M5N.Interop\M5N.Interop.csproj" />
     </ItemGroup>
 
 </Project>
