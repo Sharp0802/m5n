@@ -1,7 +1,5 @@
 ﻿using System.Buffers;
 using System.Buffers.Binary;
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
