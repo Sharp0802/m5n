@@ -1,16 +1,8 @@
 ﻿using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
+using M5N.Interop.Python;
 using M5N.Slave;
-using M5N.Slave.Interop;
-
-NativeLibrary.SetDllImportResolver(typeof(Python).Assembly, (name, assembly, path) =>
-{
-    var handle = IntPtr.Zero;
-    if (OperatingSystem.IsWindows() && name.Equals("python3.11", StringComparison.Ordinal)) 
-        handle = NativeLibrary.Load("python311");
-    return handle;
-});
 
 Console.OutputEncoding = Encoding.UTF8;
 Console.InputEncoding  = Encoding.UTF8;
@@ -47,9 +39,9 @@ else
 var root   = args[1];
 var module = args.Length == 3 ? args[2] : "main";
 
-using (var gil = new Python(root))
+using (var gil = new PythonInteropEngine(root))
 {
-    var slave = new Slave(gil.Import(module));
+    var slave = new Slave(gil.ImportModule(module));
     using var channel = new SlaveChannel(ep, slave);
     Console.WriteLine("Connection established.");
     channel.Run();
