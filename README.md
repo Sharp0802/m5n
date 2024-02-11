@@ -51,7 +51,7 @@ COLOUR = 0
 COORD = 1
 
 # Your states
-my_map = [[NONE]*15]*15
+my_map = [[0]*15,[0]*15,[0]*15,[0]*15,[0]*15,[0]*15,[0]*15,[0]*15,[0]*15,[0]*15,[0]*15,[0]*15,[0]*15,[0]*15,[0]*15]
 my_colour = NONE
 
 ### HANDLERS ###
@@ -92,18 +92,49 @@ def defeat() -> None:
 
 ```
 
+...or you can use C/C++ with same constants:
+
+```c
+#define EXPORT __attribute__((visibility("default")))
+
+typedef unsigned char  byte;
+typedef unsigned short ushort;
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+EXPORT void   SetColour(byte colour);
+EXPORT byte   ChooseColour();
+EXPORT void   SetStone(byte x, byte y, byte colour);
+EXPORT byte*  PlaceStone();
+EXPORT ushort MakeDecision();
+EXPORT void   Victory();
+EXPORT void   Defeat();
+
+#ifdef __cplusplus
+}
+#endif
+```
+
 ## How to run client
 
-Let your source codes are in `./app` folder.
+Let your (python) source codes are in `./app` folder.
 
 Then, you can run client by:
 
 ```sh
-M5N.Slave <endpoint> ./app <module>
+M5N.Slave <endpoint> Python ./app <module>
 ```
 
-You don't have to specify a module.
-Then, by default, `main` (typically `main.py`) module is used. 
+M5N also supports native-backend built into dll/so.
+To use native-backend, Use below command:
+
+```sh
+M5N.Slave <endpoint> C path/to/your/binary.dll
+```
+
+*Disclaimer: C/C++ approach isn't tested at all; NOT RECOMMANDED*
 
 ## How to run server
 
