@@ -12,7 +12,7 @@ A simple swap2-based gomoku server/broker, written in C#, compatible with CPytho
 
 ### Runtime
 
-- CPython 3.11
+- CPython 3.11 (Only with python backend.)
 
 ## Ruleset
 
@@ -32,93 +32,18 @@ Let player A, B.
 ## Disclaimer
 
 - **Virtual-environment or such things are not supported.**
-- `set_colour`, `set_stone`, `choose_colour`, `place_stone` is reserved function/handler.
+- `set_colour`, `set_stone`, `choose_colour`, `place_stone`, `make_decision`, `victory`, `defeat` is reserved function/handler.
   - Do not rename these functions.
   - Do not change function signature. Or may cause the client to crash.
 - **Only tested on pure python (without any packages)**
 
 ## How to write client
 
-Below is boilerplate for M5N.
-
-*Below may contains legacy codebase. Maynot be working correctly. See working [sample code](test/main.py). You can prove application manually with sample-code!*
-
-```python
-
-# Constants; Do not edit
-NONE  = 0
-WHITE = 1
-BLACK = 2
-
-COLOUR = 0
-COORD = 1
-
-# Your states
-my_map = [[0]*15,[0]*15,[0]*15,[0]*15,[0]*15,[0]*15,[0]*15,[0]*15,[0]*15,[0]*15,[0]*15,[0]*15,[0]*15,[0]*15,[0]*15]
-my_colour = NONE
-
-### HANDLERS ###
-
-def set_colour(colour: int) -> None:
-    global my_colour
-    my_colour = colour
-
-def set_stone(x: int, y: int, colour: int) -> None:
-    global my_map
-    my_map[x][y] = colour
-
-# Select your colour
-def choose_colour() -> None:
-    # calculating...
-    return WHITE -or- BLACK
-
-# Place your stone on map
-def place_stone() -> None:
-    # calculating...
-    return (x, y)
-
-# Change my colour(COLOUR) or place stones(COORD)
-# See `Ruleset`
-def make_decision() -> int:
-    # calculating...
-    return COLOUR -or- COORD
-
-# Victory!
-def victory() -> None:
-    pass
-
-# Defeat...
-def defeat() -> None:
-    pass
-
-################
-
-```
+See working [sample code](test/python/main.py) with python.
+You can prove application manually with sample-code!
 
 ...or you can use C/C++ with same constants:
-
-```c
-#define EXPORT __attribute__((visibility("default")))
-
-typedef unsigned char  byte;
-typedef unsigned short ushort;
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-EXPORT void   SetColour(byte colour);
-EXPORT byte   ChooseColour();
-EXPORT void   SetStone(byte x, byte y, byte colour);
-EXPORT byte*  PlaceStone();
-EXPORT ushort MakeDecision();
-EXPORT void   Victory();
-EXPORT void   Defeat();
-
-#ifdef __cplusplus
-}
-#endif
-```
+See [sample code](test/c/impl.cpp) with C++.
 
 ## How to run client
 
@@ -137,7 +62,11 @@ To use native-backend, Use below command:
 M5N.Slave <endpoint> C path/to/your/binary.dll
 ```
 
-*Disclaimer: C/C++ approach isn't tested at all; NOT RECOMMANDED*
+These syntax is mnemonic with a below rule:
+
+```sh
+M5N.Slave <endpoint> <engine> [<engine-option>+] <module>
+```
 
 ## How to run server
 
