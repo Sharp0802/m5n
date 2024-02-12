@@ -7,7 +7,7 @@ namespace M5N.Interop.Python;
 
 internal static class PyMarshal
 {
-    private const string Python    = "{8C380F7A-81D6-4BFA-BC54-A05F5394B8B1}";
+    private const string Python    = "PY_INTEROP_MODULE";
     private const string FnExports = "pyexport";
 
 

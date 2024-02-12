@@ -7,7 +7,7 @@ namespace M5N.Interop.NativeLibrary;
 
 public sealed class CInteropModule : InteropModule
 {
-    private const string Target = "{5c4a08be-fafb-4952-b5a4-5a113bc36653}";
+    private const string Target = "C_INTEROP_MODULE";
 
     public CInteropModule(string name)
     {
