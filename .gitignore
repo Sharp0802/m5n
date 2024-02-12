@@ -25,3 +25,6 @@ nuget/
 # JetBrains
 .idea/
 *.sln.DotSettings
+
+# Visual Studio
+.vs/
