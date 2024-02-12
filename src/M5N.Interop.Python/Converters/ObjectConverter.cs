@@ -32,7 +32,8 @@ public class ObjectConverter : ConverterBase<object>
 
     public override bool CanDeserialize(IntPtr obj)
     {
-        return obj == NoneHandle || 
+        return obj == IntPtr.Zero ||
+               obj == NoneHandle ||
                Converters.Any(cvt => cvt.CanDeserialize(obj));
     }
 
@@ -44,7 +45,7 @@ public class ObjectConverter : ConverterBase<object>
 
     public override object? Deserialize(IntPtr obj)
     {
-        return obj == NoneHandle 
+        return obj == NoneHandle || obj == IntPtr.Zero
             ? null 
             : Converters.First(cvt => cvt.CanDeserialize(obj)).Deserialize(obj);
     }
