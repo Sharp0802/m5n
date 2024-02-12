@@ -64,12 +64,16 @@ public sealed class CInteropModule : InteropModule
     {
         try
         {
-            result = typeof(CInteropModule).InvokeMember(
-                NameResolvingPolicy.Resolve(binder.Name),
-                BindingFlags.Public | BindingFlags.Static, 
-                null, 
-                null, 
-                args);
+            var method = typeof(CInteropModule).GetMethod(
+                NameResolvingPolicy.Resolve(binder.Name), 
+                BindingFlags.Public | BindingFlags.Static);
+            if (method is null)
+            {
+                result = null;
+                return false;
+            }
+
+            result = method.Invoke(null, args);
             return true;
         }
         catch (MissingMethodException)
