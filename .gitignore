@@ -28,3 +28,10 @@ nuget/
 
 # Visual Studio
 .vs/
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
