@@ -21,6 +21,15 @@ public sealed class CInteropModule : InteropModule
                 return handle;
             });
     }
+    
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    private struct Vector
+    {
+#pragma warning disable CS0649
+        public byte X;
+        public byte Y;
+#pragma warning restore CS0649
+    }
 
     [DllImport(Target)]
     public static extern void SetColour(byte colour);
@@ -36,10 +45,10 @@ public sealed class CInteropModule : InteropModule
         unsafe
         {
             var p = PlaceStone_();
-            return new object[] { p[0], p[1] };
+            return new object[] { p.X, p.Y };
             
             [DllImport(Target, EntryPoint = "PlaceStone")]
-            static extern byte* PlaceStone_();
+            static extern Vector PlaceStone_();
         }
     }
 
