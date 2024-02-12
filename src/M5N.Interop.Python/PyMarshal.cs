@@ -83,10 +83,12 @@ internal static class PyMarshal
         }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static IntPtr CallObject(IntPtr callable, IntPtr args)
     {
-        return PyObject_CallObject(callable, args);
+        var r = PyObject_CallObject(callable, args);
+        if (r == IntPtr.Zero)
+            throw new PythonException();
+        return r;
 
         [DllImport(Python)]
         static extern IntPtr PyObject_CallObject(IntPtr callable, IntPtr args);
