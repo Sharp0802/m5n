@@ -21,16 +21,24 @@ public abstract class DesktopSlave(MapDisplay display) : ISlave, ITraceable<Desk
         }
     }
 
+    protected float[] Weights { get; } = new float[15 * 15];
+
     public abstract Colour           InquiryColour();
     public abstract (byte X, byte Y) InquiryStone();
     public abstract TagCode          MakeDecision();
 
+    private void UpdateWeight()
+    {
+        throw new NotImplementedException();
+    }
+    
     public void SetStone(byte x, byte y, Colour colour)
     {
         Log.CallerMember(this);
         
-        // TODO : Update weights
-
+        UpdateWeight();
+        display.Update(Weights);
+        
         display.Dispatcher.Invoke(() =>
         {
             display.Place(x, y).Fill = new SolidColorBrush(

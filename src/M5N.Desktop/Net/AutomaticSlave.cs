@@ -12,8 +12,10 @@ public class AutomaticSlave(MapDisplay display) : DesktopSlave(display)
 
     public override (byte X, byte Y) InquiryStone()
     {
-        // TODO
-        throw new NotImplementedException();
+        var i = Weights
+                .Select((w, i) => (w, i))
+                .MaxBy(t => t.w).i;
+        return ((byte, byte))(i % 15, i / 15);
     }
 
     public override TagCode MakeDecision()

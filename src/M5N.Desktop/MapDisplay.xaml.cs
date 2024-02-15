@@ -29,8 +29,6 @@ public partial class MapDisplay : ITraceable<MapDisplay>
     private readonly byte[]      _map    = new byte[15 * 15];
     private readonly TextBlock[] _texts  = new TextBlock[15 * 15];
 
-    public float[] Weights { get; } = new float[15 * 15];
-
     public Color Colour
     {
         get => Color.FromRgb(_colour, _colour, _colour);
@@ -61,10 +59,10 @@ public partial class MapDisplay : ITraceable<MapDisplay>
         for (var y = 0; y < 15; ++y)
         for (var x = 0; x < 15; ++x)
         {
-            _texts[y * 15 + x] = Label(x, y, Weights[y * 15 + x].ToString("F2"));
+            (_texts[y * 15 + x] = Label(x, y, 0.0f.ToString("F2"))).Foreground = new SolidColorBrush(Colors.Red);
 
             var (x1, y1) = (x, y);
-            var ellipse = Place(x, y, false);
+            var ellipse = Place(x, y);
             ellipse.MouseLeave += (_, _) => { ellipse.Fill = Transparent; };
             ellipse.MouseEnter += (_, _) => { ellipse.Fill = Acrylic; };
             ellipse.MouseLeftButtonDown += async (_, _) =>
@@ -73,11 +71,9 @@ public partial class MapDisplay : ITraceable<MapDisplay>
 
                 _map[y1 * 15 + x1] = _colour;
                 await Placed.Invoke(this, new MapDisplayEventArgs(x1, y1, colour));
-                Place(x1, y1, false).Fill = new SolidColorBrush(colour);
+                Place(x1, y1).Fill = new SolidColorBrush(colour);
             };
         }
-
-        Update();
     }
 
 
@@ -96,16 +92,13 @@ public partial class MapDisplay : ITraceable<MapDisplay>
         set => Watermark.Text = value;
     }
 
-    public Ellipse Place(int x, int y, bool updateWeight = true)
+    public Ellipse Place(int x, int y)
     {
         var ellipse = new Ellipse();
         ellipse.Fill = Transparent;
         Grid.SetColumn(ellipse, x);
         Grid.SetRow(ellipse, y);
         GridMap.Children.Add(ellipse);
-
-        if (updateWeight)
-            Update();
 
         return ellipse;
     }
@@ -132,13 +125,13 @@ public partial class MapDisplay : ITraceable<MapDisplay>
         return (byte)(255 - v);
     }
 
-    private void Update()
+    public void Update(Span<float> weights)
     {
         for (var y = 0; y < 15; ++y)
         for (var x = 0; x < 15; ++x)
         {
             var text   = _texts[y * 15 + x];
-            var weight = Weights[y * 15 + x];
+            var weight = weights[y * 15 + x];
             var colour = Color.FromRgb(InvertColour(ColourClamp(weight)), ColourClamp(weight), 0);
 
             text.Text       = weight.ToString("F2");
