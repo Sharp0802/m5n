@@ -144,7 +144,7 @@ public partial class MainWindow : ITraceable<MainWindow>
     private void ManualPlay(object sender, RoutedEventArgs e)
     {
         Log.CallerMember(this);
-        RunChannel(new ManualSlave(this, Display));
+        RunChannel(new ManualSlave(Display));
     }
 
     private void AutoPlay(object sender, RoutedEventArgs e)
