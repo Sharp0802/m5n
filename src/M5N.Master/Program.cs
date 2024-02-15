@@ -30,8 +30,7 @@ using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, Pr
     var win = new Master(user0, user1).Run();
     
     Console.WriteLine($"Game closed. Player {win} win.");
-    
-    socket.Shutdown(SocketShutdown.Both);
+    Console.ReadKey();
 }
 
 return 0;
