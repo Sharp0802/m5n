@@ -42,14 +42,11 @@ public sealed class CInteropModule : InteropModule
 
     public static IEnumerable<object> PlaceStone()
     {
-        unsafe
-        {
-            var p = PlaceStone_();
-            return new object[] { p.X, p.Y };
+        var p = PlaceStone_();
+        return new object[] { p.X, p.Y };
             
-            [DllImport(Target, EntryPoint = "PlaceStone")]
-            static extern Vector PlaceStone_();
-        }
+        [DllImport(Target, EntryPoint = "PlaceStone")]
+        static extern Vector PlaceStone_();
     }
 
     [DllImport(Target)]

@@ -4,6 +4,7 @@ using System.Text;using M5N.Interop;
 using M5N.Interop.NativeLibrary;
 using M5N.Interop.Python;
 using M5N.Slave;
+using M5N.Slave.Shared;
 
 Console.OutputEncoding = Encoding.UTF8;
 Console.InputEncoding  = Encoding.UTF8;
