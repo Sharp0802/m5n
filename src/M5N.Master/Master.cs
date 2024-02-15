@@ -1,11 +1,16 @@
 using System.Runtime.CompilerServices;
 using M5N.DataTransferObjects;
+using M5N.Logging;
 using M5N.Primitives;
+using Microsoft.Extensions.Logging;
+using LoggerFactory = M5N.Logging.LoggerFactory;
 
 namespace M5N.Master;
 
-public class Master
+public class Master : ITraceable<Master>
 {
+    public ILogger<Master> Logger { get; } = LoggerFactory.Acquire<Master>();
+
     public Master(MasterChannel user0, MasterChannel user1)
     {
         User0 = user0;
@@ -37,6 +42,8 @@ public class Master
 
     private ChannelRespondContext<T> AcceptDTOFrom<T>(byte id) where T : unmanaged, IChannelObject<T>
     {
+        Log.CallerMember(this);
+        
         var ctx = this[id].Request<T>(Timeout);
         if (ctx.Result is null) 
             DeclareVictory(OtherPlayer(id));
@@ -47,6 +54,8 @@ public class Master
     /// <returns>True if game should be continued; otherwise, False.</returns>
     private bool AcceptCoordinateFrom(byte id, out CoordinateDTO coord)
     {
+        Log.CallerMember(this);
+        
         Unsafe.SkipInit(out coord);
         
         var other = OtherPlayer(id);
@@ -74,6 +83,8 @@ public class Master
     /// <returns><inheritdoc cref="AcceptCoordinateFrom"/></returns>
     private bool AcceptChoiceFrom(byte id, out TagCode choice)
     {
+        Log.CallerMember(this);
+
         Unsafe.SkipInit(out choice);
         
         var other = OtherPlayer(id);
@@ -97,6 +108,8 @@ public class Master
     /// <returns><inheritdoc cref="AcceptCoordinateFrom"/></returns>
     private bool AcceptColourFrom(byte id, out Colour colour)
     {
+        Log.CallerMember(this);
+
         Unsafe.SkipInit(out colour);
         
         var other = OtherPlayer(id);
@@ -119,6 +132,8 @@ public class Master
 
     private void SwapColour()
     {
+        Log.CallerMember(this);
+
         (User0.Colour, User1.Colour) = (User1.Colour, User0.Colour);
         User0.Respond(new ColourDTO(User0.Colour));
         User1.Respond(new ColourDTO(User1.Colour));
@@ -149,6 +164,8 @@ public class Master
 
     private int RankOf(CoordinateDTO coord)
     {
+        Log.CallerMember(this);
+
         return new[]
         {
             BiLengthFrom(coord, 0, 1),
@@ -160,6 +177,8 @@ public class Master
 
     public int Run()
     {
+        Log.CallerMember(this);
+
         User0.Respond(new IdentifierDTO(0));
         User1.Respond(new IdentifierDTO(1));
         

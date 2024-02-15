@@ -1,10 +1,15 @@
+using M5N.Logging;
 using M5N.Primitives;
 using M5N.Slave.Shared;
+using Microsoft.Extensions.Logging;
+using LoggerFactory = M5N.Logging.LoggerFactory;
 
 namespace M5N.Slave;
 
-public class Slave(dynamic module) : ISlave
+public class Slave(dynamic module) : ISlave, ITraceable<Slave>
 {
+    public ILogger<Slave> Logger { get; } = LoggerFactory.Acquire<Slave>();
+
     private Colour _colour;
 
     public Colour Colour
@@ -19,16 +24,22 @@ public class Slave(dynamic module) : ISlave
 
     public Colour InquiryColour()
     {
+        Log.CallerMember(this);
+        
         return (Colour)module.ChooseColour();
     }
 
     public void SetStone(byte x, byte y, Colour colour)
     {
+        Log.CallerMember(this);
+
         module.SetStone(x, y, (byte)colour);
     }
 
     public (byte X, byte Y) InquiryStone()
     {
+        Log.CallerMember(this);
+
         var tuple = ((IEnumerable<object?>)module.PlaceStone()).ToArray();
         if (tuple.Length != 2)
             throw new InvalidProgramException("Signature of reserved function is modified. See the manual.");
@@ -49,16 +60,22 @@ public class Slave(dynamic module) : ISlave
 
     public TagCode MakeDecision()
     {
+        Log.CallerMember(this);
+
         return (TagCode)module.MakeDecision();
     }
 
     public void DeclareVictory()
     {
+        Log.CallerMember(this);
+
         module.Victory();
     }
 
     public void DeclareDefeat()
     {
+        Log.CallerMember(this);
+
         module.Defeat();
     }
 }
