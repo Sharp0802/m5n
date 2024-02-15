@@ -1,0 +1,6 @@
+﻿<Project Sdk="M5N.Sdk/1.0.0">
+  <ItemGroup>
+    <ProjectReference Include="..\M5N.Logging\M5N.Logging.csproj" />
+    <ProjectReference Include="..\M5N\M5N.csproj" />
+  </ItemGroup>
+</Project>
