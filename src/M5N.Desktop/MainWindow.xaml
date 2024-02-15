@@ -1,0 +1,88 @@
+﻿<Window x:Class="M5N.Desktop.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:M5N.Desktop"
+        xmlns:drawing="clr-namespace:System.Drawing;assembly=System.Drawing.Common"
+        mc:Ignorable="d"
+        Title="MainWindow"
+        MinHeight="512"
+        MinWidth="512"
+        Height="648"
+        Width="512"
+        ResizeMode="NoResize">
+
+    <Window.Resources>
+        <local:SystemIconConverter x:Key="SystemIconConverter" />
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Ribbon Grid.Row="0" 
+                Grid.Column="0" 
+                Loaded="CollapseQuickAccessToolbar">
+            <Ribbon.ApplicationMenu>
+                <RibbonApplicationMenu Visibility="Collapsed"/>
+            </Ribbon.ApplicationMenu>
+            
+            <x:Code>
+                <![CDATA[
+                private void CollapseQuickAccessToolbar(Object sender, RoutedEventArgs e) {
+                    ((Grid)VisualTreeHelper.GetChild((DependencyObject)sender, 0)).RowDefinitions[0].Height = new GridLength(0);
+                }
+                ]]>
+            </x:Code>
+
+            <RibbonTab Header="Generic">
+                <RibbonGroup Header="App">
+                    <RibbonButton
+                        LargeImageSource="{Binding 
+                        Source={x:Static drawing:StockIconId.Users}, 
+                        Converter={StaticResource SystemIconConverter}}" 
+                        Label="Manual Play" 
+                        x:Name="StartButton"
+                        Click="ManualPlay"/>
+                    <RibbonButton
+                        LargeImageSource="{Binding 
+                        Source={x:Static drawing:StockIconId.Drive35}, 
+                        Converter={StaticResource SystemIconConverter}}" 
+                        Label="Auto Play" 
+                        x:Name="ConnectButton"
+                        Click="AutoPlay"/>
+                    <RibbonButton
+                        LargeImageSource="{Binding 
+                        Source={x:Static drawing:StockIconId.Error}, 
+                        Converter={StaticResource SystemIconConverter}}" 
+                        Label="Force Halt"
+                        IsEnabled="False"
+                        x:Name="HaltButton"
+                        Click="ForceHalt"/>
+                </RibbonGroup>
+                <RibbonGroup Header="Debug">
+                    <RibbonButton
+                        LargeImageSource="{Binding 
+                        Source={x:Static drawing:StockIconId.Software}, 
+                        Converter={StaticResource SystemIconConverter}}" 
+                        Label="Attach Debugger" 
+                        Click="AttachDebugger"/>
+                </RibbonGroup>
+                <RibbonGroup Header="Misc.">
+                    <RibbonButton
+                        SmallImageSource="{Binding 
+                        Source={x:Static drawing:StockIconId.Help}, 
+                        Converter={StaticResource SystemIconConverter}}"
+                        Label="Version" 
+                        Click="ViewVersion"/>
+                </RibbonGroup>
+            </RibbonTab>
+        </Ribbon>
+
+        <local:MapDisplay Grid.Row="1" x:Name="Display" />
+
+    </Grid>
+</Window>
