@@ -1,8 +1,9 @@
 using M5N.Primitives;
+using M5N.Slave.Shared;
 
 namespace M5N.Slave;
 
-public class Slave(dynamic module)
+public class Slave(dynamic module) : ISlave
 {
     private Colour _colour;
 
@@ -16,7 +17,7 @@ public class Slave(dynamic module)
         }
     }
 
-    public Colour InqueryColour()
+    public Colour InquiryColour()
     {
         return (Colour)module.ChooseColour();
     }
@@ -26,7 +27,7 @@ public class Slave(dynamic module)
         module.SetStone(x, y, (byte)colour);
     }
 
-    public (byte X, byte Y) InqueryStone()
+    public (byte X, byte Y) InquiryStone()
     {
         var tuple = ((IEnumerable<object?>)module.PlaceStone()).ToArray();
         if (tuple.Length != 2)

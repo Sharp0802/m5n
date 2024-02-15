@@ -1,15 +1,22 @@
 using System.Net;
 using M5N.DataTransferObjects;
+using M5N.Logging;
 using M5N.Primitives;
+using Microsoft.Extensions.Logging;
+using LoggerFactory = M5N.Logging.LoggerFactory;
 
-namespace M5N.Slave;
+namespace M5N.Slave.Shared;
 
-public class SlaveChannel(EndPoint endpoint, Slave slave) : Channel(endpoint)
+public class SlaveChannel(EndPoint endpoint, ISlave slave) : Channel(endpoint), ITraceable<SlaveChannel>
 {
+    public ILogger<SlaveChannel> Logger { get; } = LoggerFactory.Acquire<SlaveChannel>();
+
     private byte _id = 0xFF;
 
     private bool Frame()
     {
+        Log.CallerMember(this);
+        
         var timeout = Timeout.InfiniteTimeSpan;
 
         ReceiveCode(ref timeout, out var ctrl, out var code);
@@ -21,13 +28,13 @@ public class SlaveChannel(EndPoint endpoint, Slave slave) : Channel(endpoint)
             switch (tag)
             {
                 case TagCode.Colour:
-                    var colour = slave.InqueryColour();
+                    var colour = slave.InquiryColour();
                     err = Respond(new ColourDTO(colour));
                     if (err is ErrorCode.Success)
                         slave.Colour = colour;
                     break;
                 case TagCode.Coordinate:
-                    var (x, y) = slave.InqueryStone();
+                    var (x, y) = slave.InquiryStone();
                     err        = Respond(new CoordinateDTO(x, y, slave.Colour));
                     if (err is ErrorCode.Success)
                         slave.SetStone(x, y, slave.Colour);
@@ -96,5 +103,10 @@ public class SlaveChannel(EndPoint endpoint, Slave slave) : Channel(endpoint)
         while (Frame())
         {
         }
+    }
+
+    public Task RunAsync(CancellationToken token)
+    {
+        return Task.Factory.StartNew(Run, token)/*.WaitAsync(token)*/;
     }
 }

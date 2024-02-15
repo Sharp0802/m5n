@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\M5N.Slave.Shared\M5N.Slave.Shared.csproj" />
         <ProjectReference Include="..\M5N.Interop.NativeLibrary\M5N.Interop.NativeLibrary.csproj" />
         <ProjectReference Include="..\M5N.Interop.Python\M5N.Interop.Python.csproj" />
         <ProjectReference Include="..\M5N\M5N.csproj" />
