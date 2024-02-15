@@ -1,0 +1,36 @@
+﻿<Window x:Class="M5N.Desktop.EndPointWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        mc:Ignorable="d"
+        Title="Endpoint" 
+        Width="240"
+        SizeToContent="Height"
+        ResizeMode="NoResize">
+    <Grid>
+        <StackPanel Margin="5">
+            <Label>Remote Endpoint</Label>
+            <TextBox x:Name="EndpointBox"/>
+            <TextBlock IsHitTestVisible="False" 
+                       Text="localhost:8000..." 
+                       VerticalAlignment="Center" 
+                       HorizontalAlignment="Left" 
+                       Margin="10,-20,0,0" Foreground="DarkGray">
+                <TextBlock.Style>
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Text, ElementName=EndpointBox}" Value="">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+            <Button Content="Connect" 
+                    Margin="0,5,0,0"
+                    Click="Connect"/>
+        </StackPanel>
+    </Grid>
+</Window>
